@@ -31,7 +31,7 @@ export async function postParticipants(req, res) {
             to: 'Todos',
             text: 'entra na sala...',
             type: 'status',
-            time: time
+            time
         }
 
         await db.collection('messages').insertOne(message);

@@ -38,6 +38,17 @@ export async function postParticipants(req, res) {
 
         return res.sendStatus(201);
     } catch (error) {
+        return res.sendStatus(500);
+    }
+}
+
+export async function getParticipants(req, res) {
+    try {
+        const participants = await db.collection('participants').find({}).toArray();
+
+        return res.status(200).send(participants)
+    } catch (error) {
         console.log(error.message)
+        return res.sendStatus(500);
     }
 }

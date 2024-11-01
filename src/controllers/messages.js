@@ -37,3 +37,24 @@ export async function postMessage(req, res) {
         return res.sendStatus(500);
     }
 }
+
+export async function getMessages(req, res) {
+    const { limit } = req.query;
+
+    try {
+        if (limit) {
+            const numLimit = Number(limit);
+
+            if (isNaN(numLimit)) {
+                return res.sendStatus(400);
+            }
+
+            const messages = await db.collection('messages').find({}).sort({ _id: -1 }).limit(numLimit).toArray();
+
+            return res.status(200).send(messages)
+        }
+    } catch (error) {
+        console.log(error.message);
+        return res.sendStatus(500);
+    }
+}

@@ -46,6 +46,14 @@ export async function getMessages(req, res) {
     const { user } = req.headers;
 
     try {
+        const query = {
+            $or: [
+                { type: 'message' },
+                { to: user },
+                { from: user }
+            ]
+        };
+
         if (limit) {
             const numLimit = Number(limit);
 
@@ -53,12 +61,12 @@ export async function getMessages(req, res) {
                 return res.sendStatus(400);
             }
 
-            const messages = await db.collection('messages').find({ to: user }).sort({ _id: -1 }).limit(numLimit).toArray();
+            const messages = await db.collection('messages').find(query).sort({ _id: -1 }).limit(numLimit).toArray();
 
             return res.status(200).send(messages);
         }
 
-        const messages = await db.collection('messages').find({ to: user }).sort({ _id: -1 }).toArray();
+        const messages = await db.collection('messages').find(query).sort({ _id: -1 }).toArray();
 
         return res.status(200).send(messages);
     } catch (error) {

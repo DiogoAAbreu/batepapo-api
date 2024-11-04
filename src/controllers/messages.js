@@ -33,7 +33,7 @@ export async function postMessage(req, res) {
             time
         };
 
-        await db.collection('messages').insertOne({ message });
+        await db.collection('messages').insertOne(message);
 
         return res.sendStatus(201);
     } catch (error) {
@@ -53,7 +53,7 @@ export async function getMessages(req, res) {
                 return res.sendStatus(400);
             }
 
-            const messages = await db.collection('messages').find({}).sort({ _id: -1 }).limit(numLimit).toArray();
+            const messages = await db.collection('messages').find({ to: user }).sort({ _id: -1 }).limit(numLimit).toArray();
 
             return res.status(200).send(messages)
         }

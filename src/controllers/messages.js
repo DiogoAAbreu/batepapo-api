@@ -10,11 +10,16 @@ export async function postMessage(req, res) {
         const participant = await db.collection('participants').findOne({ name: user });
         const validMessage = messageSchema.validate({ to, text, type }, { abortEarly: false });
 
-        if (!participant || validMessage.error) {
+        if (!participant) {
             return res.sendStatus(422);
         }
 
-        if (type !== 'message' || type !== 'private_message') {
+        if (validMessage.error) {
+            const errors = validMessage.error.details.map(error => error.message)
+            return res.status(422).send(errors);
+        }
+
+        if (type !== 'message' && type !== 'private_message') {
             return res.sendStatus(422);
         }
 
@@ -32,14 +37,13 @@ export async function postMessage(req, res) {
 
         return res.sendStatus(201);
     } catch (error) {
-        console.log(error.message);
-
         return res.sendStatus(500);
     }
 }
 
 export async function getMessages(req, res) {
     const { limit } = req.query;
+    const { user } = req.headers;
 
     try {
         if (limit) {

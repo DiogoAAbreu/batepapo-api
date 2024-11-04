@@ -50,7 +50,8 @@ export async function getMessages(req, res) {
             $or: [
                 { type: 'message' },
                 { to: user },
-                { from: user }
+                { from: user },
+                { type: 'status' }
             ]
         };
 

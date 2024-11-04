@@ -55,10 +55,13 @@ export async function getMessages(req, res) {
 
             const messages = await db.collection('messages').find({ to: user }).sort({ _id: -1 }).limit(numLimit).toArray();
 
-            return res.status(200).send(messages)
+            return res.status(200).send(messages);
         }
+
+        const messages = await db.collection('messages').find({ to: user }).sort({ _id: -1 }).toArray();
+
+        return res.status(200).send(messages);
     } catch (error) {
-        console.log(error.message);
         return res.sendStatus(500);
     }
 }

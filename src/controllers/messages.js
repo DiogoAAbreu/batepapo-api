@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { messageSchema } from "../schemas/messagesSchemas.js";
 import { db } from "../connection.js"
+import { ObjectId } from "mongodb";
 
 export async function postMessage(req, res) {
     const { to, text, type } = req.body;
@@ -72,5 +73,28 @@ export async function getMessages(req, res) {
         return res.status(200).send(messages);
     } catch (error) {
         return res.sendStatus(500);
+    }
+}
+
+export async function deleteMessage(req, res) {
+    const { user } = req.headers;
+    const { id } = req.params;
+
+    try {
+        const messageExists = await db.collection('messages').findOne({ _id: ObjectId(id) });
+
+        if (!messageExists) {
+            return res.sendStatus(404);
+        }
+
+        if (user != messageExists.from) {
+            return res.sendStatus(401);
+        }
+
+        await db.collection('messages').deleteOne({ _id: id });
+
+        return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500).send(error.message);
     }
 }

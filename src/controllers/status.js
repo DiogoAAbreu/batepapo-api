@@ -13,7 +13,7 @@ export async function setStatus(req, res) {
 
         const lastStatus = Date.now();
 
-        await db.collection('participants').upadateOne({ _id: ObjectId(existingUser._id) }, { $set: lastStatus })
+        await db.collection('participants').updateOne({ _id: existingUser._id }, { $set: { lastStatus } })
 
         return res.sendStatus(200);
     } catch (error) {

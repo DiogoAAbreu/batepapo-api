@@ -80,8 +80,9 @@ export async function deleteMessage(req, res) {
     const { user } = req.headers;
     const { id } = req.params;
 
+
     try {
-        const messageExists = await db.collection('messages').findOne({ _id: ObjectId(id) });
+        const messageExists = await db.collection('messages').findOne({ _id: new ObjectId(id) });
 
         if (!messageExists) {
             return res.sendStatus(404);
@@ -91,7 +92,7 @@ export async function deleteMessage(req, res) {
             return res.sendStatus(401);
         }
 
-        await db.collection('messages').deleteOne({ _id: id });
+        await db.collection('messages').deleteOne({ _id: new ObjectId(id) });
 
         return res.sendStatus(200);
     } catch (error) {

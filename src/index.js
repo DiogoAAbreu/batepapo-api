@@ -18,7 +18,7 @@ app.get('/participants', getParticipants);
 
 app.post('/messages', postMessage);
 app.get('/messages', getMessages)
-app.delete('/messages', deleteMessage)
+app.delete('/messages/:id', deleteMessage)
 
 app.post('/status', setStatus);
 

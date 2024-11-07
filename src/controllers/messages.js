@@ -113,7 +113,7 @@ export async function putMessage(req, res) {
             type
         }
 
-        const messageValidade = putMessage.validate(newMessage, { abortEarly: false });
+        const messageValidade = putMessageSchema.validate(newMessage, { abortEarly: false });
 
         if (messageValidade.error) {
             const erros = messageValidade.error.details.map(error => error.message);
@@ -126,10 +126,14 @@ export async function putMessage(req, res) {
             return res.sendStatus(404);
         }
 
+        if (messageExists.from !== user) {
+            return res.sendStatus(401);
+        }
+
         await db.collection('messages').updateOne({ _id: message._id }, { $set: newMessage });
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).send(error.message)
+        return res.status(500).send(error.message);
     }
 }

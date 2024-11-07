@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { getParticipants, postParticipants } from './controllers/participants.js';
-import { deleteMessage, getMessages, postMessage } from './controllers/messages.js';
+import { deleteMessage, getMessages, postMessage, putMessage } from './controllers/messages.js';
 import { setStatus } from './controllers/status.js';
 import { db } from './connection.js';
 import dayjs from 'dayjs';
@@ -19,6 +19,7 @@ app.get('/participants', getParticipants);
 app.post('/messages', postMessage);
 app.get('/messages', getMessages)
 app.delete('/messages/:id', deleteMessage)
+app.put('/messages/:id', putMessage)
 
 app.post('/status', setStatus);
 

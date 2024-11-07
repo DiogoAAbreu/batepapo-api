@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { messageSchema } from "../schemas/messagesSchemas.js";
+import { messageSchema, putMessageSchema } from "../schemas/messagesSchemas.js";
 import { db } from "../connection.js"
 import { ObjectId } from "mongodb";
 
@@ -97,5 +97,39 @@ export async function deleteMessage(req, res) {
         return res.sendStatus(200);
     } catch (error) {
         return res.status(500).send(error.message);
+    }
+}
+
+export async function putMessage(req, res) {
+    const { id } = req.params;
+    const { to, text, type } = req.body;
+    const { user } = req.headers;
+
+    try {
+        const newMessage = {
+            from: user,
+            text,
+            to,
+            type
+        }
+
+        const messageValidade = putMessage.validate(newMessage, { abortEarly: false });
+
+        if (messageValidade.error) {
+            const erros = messageValidade.error.details.map(error => error.message);
+            return res.status(422).send(erros);
+        }
+
+        const messageExists = await db.collection('messages').findOne({ _id: new ObjectId(id) });
+
+        if (!messageExists) {
+            return res.sendStatus(404);
+        }
+
+        await db.collection('messages').updateOne({ _id: message._id }, { $set: newMessage });
+
+        return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500).send(error.message)
     }
 }

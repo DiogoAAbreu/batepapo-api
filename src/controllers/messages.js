@@ -65,7 +65,7 @@ export async function getMessages(req, res) {
 
             const messages = await db.collection('messages').find(query).sort({ _id: -1 }).limit(numLimit).toArray();
 
-            return res.status(200).send(messages);
+            return res.status(200).send(messages.reverse());
         }
 
         const messages = await db.collection('messages').find(query).sort({ _id: -1 }).toArray();

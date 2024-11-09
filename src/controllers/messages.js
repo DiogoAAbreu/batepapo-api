@@ -126,14 +126,20 @@ export async function putMessage(req, res) {
             return res.sendStatus(404);
         }
 
+        const participantExists = await db.collection('participants').findOne({ name: user });
+
+        if (!participantExists) {
+            return res.sendStatus(404);
+        }
+
         if (messageExists.from !== user) {
             return res.sendStatus(401);
         }
 
-        await db.collection('messages').updateOne({ _id: message._id }, { $set: newMessage });
+        await db.collection('messages').updateOne({ _id: messageExists._id }, { $set: newMessage });
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).send(error.message);
+        return res.status(500).send(error);
     }
 }
